@@ -10,6 +10,16 @@ Here's app containers the project has now:
 * `NativeApp.Desktop` (executable for all Desktop platforms, but currently only Windows and Linux).
 * `NativeApp.Android` (Android application) - Some more code is required to make things work on this platform.
 
+## Building
+Before you build you must install Mono runtime binaries (it's not included in the repo, would be too big). They're typically placed at paths like `thirdparty/Runtime.Mono/gen-windows/`. You can of course use your own built runtime, or... better use my simple script `prepare-runtime.py` to easily install and unpack the runtime in the expected format (what the build system recognises). It downloads them from NuGet. With it you can also learn how exactly and where to put your own runtime binaries.
+
+Call the script without arguments to show the usage and some additional info. Then download the binaries for the desired platforms, here's some examples:
+- `py prepare-runtime.py win-x64` installs the runtime for x64 architecture with the default version (the default is NET 8.0.11).
+- `py prepare-runtime.py linux-x64 9.0.0-preview.7.24405.7` - for Linux x64, with version specified.
+- `py prepare-runtime.py android-arm64` - for Android arm64-v8a architecture.
+
+Now you can simply build the `NativeApp.Desktop` project. You can also do the same pretty simple with `NativeApp.Android`. Just make sure that required SDKs are installed.
+
 ## TODO
 - [x] Add Linux support, and convert the project to a CMake project (don't use MSBuild's .vcxproj).
 > Done, as well as the concept of app containers was introduced. Now all desktop platforms are built through a CMake project `NativeApp.Desktop`. Also `NativeApp.Shared` appeared and it's supposed to have only fully cross-platform native code. 
