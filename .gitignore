@@ -1,0 +1,14 @@
+.vs/
+
+artifacts/
+out/build/
+build/
+
+bin/
+obj/
+
+# Generated cross-platform Mono runtime binaries
+/thirdparty/Runtime.Mono/gen-*/
+
+# Downloaded runtime NuGet archives via prepare-runtime.py
+/Microsoft.NETCore.App.Runtime.Mono.*.zip
