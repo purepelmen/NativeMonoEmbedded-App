@@ -23,12 +23,14 @@ android {
             assets.srcDirs = [
                 'src/main/assets',
 
-                "${rootProject.projectDir}/../artifacts/msbuild_generated/Debug",
+                // Mono Runtime specific files are included from separate generated folders (excluded from Git).
+                'src/main/assetsGen',
                 "${rootProject.projectDir}/../thirdparty/Runtime.Mono/gen-android/dist"
             ]
             jniLibs.srcDirs = [
                 'src/main/jniLibs',
 
+                // Mono Runtime specific libraries are included from a separate generated folder.
                 "${rootProject.projectDir}/../thirdparty/Runtime.Mono/gen-android/jniLibs"
             ]
         }
@@ -50,6 +52,12 @@ android {
             version '3.22.1'
         }
     }
+}
+
+// Our CMake knows when and where to look for required files that's need to be packaged in the APK, so please execute it before the assets will be merged.
+project.afterEvaluate {
+    mergeDebugAssets.dependsOn externalNativeBuildDebug
+    mergeReleaseAssets.dependsOn externalNativeBuildRelease
 }
 
 dependencies {

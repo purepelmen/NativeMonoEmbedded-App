@@ -54,7 +54,7 @@ Now you can simply build the `NativeApp.Desktop` project. You can also do the sa
 > Done. Mono API requires to specify a specific path to the framework libs directory which was hard to do if I wanna ship the whole runtime, as I haven't found a way to get the direct path to Android APK's assets folder. Now I'm providing custom PreLoad hook which can locate and load necessary assemblies. I managed to decrease the space the app uses significantly (app size + files + cache): roughly **40 MB -> 15 MB**, in my specific case (`arm64-v8a` only, Debug build type, some framework components removed).
 
 > The user-code ('Managed' dir) is STILL copied at the first start-up though, and won't be located the same way (I want to have full real paths to the directory).
-- [ ] Fix `NativeApp.Android` project building so it can build Managed libs, copy files to assets at the right time.
-- [ ] Fix `NativeApp.Android` can't determine what Managed libs it need to copy (Debug or Release).
+- [x] Fix `NativeApp.Android` project building so it can build Managed libs, copy files to assets at the right time.
+- [x] Fix `NativeApp.Android` can't determine what Managed libs it need to copy (Debug or Release).
 - [ ] Add support for other architectures for Desktop platforms (i.e. windows 32-bit).
 - [ ] Debugger?

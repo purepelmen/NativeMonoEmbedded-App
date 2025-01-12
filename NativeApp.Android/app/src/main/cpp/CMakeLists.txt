@@ -5,6 +5,7 @@
 cmake_minimum_required(VERSION 3.22.1)
 
 set(SOLUTION_DIR "${CMAKE_SOURCE_DIR}/../../../../../")
+set(ANDROID_ASSETS_GENERATED "${CMAKE_SOURCE_DIR}/../assetsGen/")
 add_compile_definitions(PLATFORM_ANDROID)
 
 add_subdirectory("${SOLUTION_DIR}/NativeApp.Shared/" ./Shared/)
@@ -26,3 +27,6 @@ include("${SOLUTION_DIR}/NativeApp.Shared/cmake/EmbeddingMono.cmake")
 target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE "${MONO_RUNTIME_LIBS}")
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE ${MONO_REQUIRED_LINK_LIBS})
 
+add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${MSBUILD_GENERATED} ${ANDROID_ASSETS_GENERATED}
+)
