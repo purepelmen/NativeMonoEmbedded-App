@@ -11,13 +11,37 @@ Here's app containers the project has now:
 * `NativeApp.Android` (Android application) - Some more code is required to make things work on this platform.
 
 ## Building
+### Requirements
+Generally for a Desktop build you need this:
+- .NET SDK
+- C++ compiler (MSVC, GCC, Clang)
+- CMake
+- Python 3 (optional)
+
+For Android you will need this additionally:
+- Android SDK & NDK
+- Java
+
+Note: about exact versions... it depends. In this project I use:
+> - `Assembly-Main` is targetting **net8.0**.
+> - `NativeApp.Shared`, `NativeApp.Desktop` and `nativeapp` (in `NativeApp.Android`) set the C\+\+20 in CMake. They also use C++17 features like **std::filesystem**.
+> `NativeApp.Android` targets SDK 34, sets min SDK as 24, uses Java 8 and doesn't specify a specific NDK version.
+
+> Of course you can change these versions used and apply some tweaks so everything can work on lower/newer versions.
+
+Note: Python is needed only if you would use `prepare-runtime.py`. It's not used when building the project.
+
+### Getting runtime libraries
 Before you build you must install Mono runtime binaries (it's not included in the repo, would be too big). They're typically placed at paths like `thirdparty/Runtime.Mono/gen-windows/`. You can of course use your own built runtime, or... better use my simple script `prepare-runtime.py` to easily install and unpack the runtime in the expected format (what the build system recognises). It downloads them from NuGet. With it you can also learn how exactly and where to put your own runtime binaries.
 
 Call the script without arguments to show the usage and some additional info. Then download the binaries for the desired platforms, here's some examples:
-- `py prepare-runtime.py win-x64` installs the runtime for x64 architecture with the default version (the default is NET 8.0.11).
+- `py prepare-runtime.py win-x64` installs the runtime for Windows x64 platform with the default version (the default is NET 8.0.11).
 - `py prepare-runtime.py linux-x64 9.0.0-preview.7.24405.7` - for Linux x64, with version specified.
 - `py prepare-runtime.py android-arm64` - for Android arm64-v8a architecture.
 
+Note that if you want to know exact platform identifiers (like `win-x64`) and available versions, you should search for NuGet packages like `Microsoft.NETCore.App.Runtime.Mono.*`, and check what versions are available for them.
+
+### Building executable/application
 Now you can simply build the `NativeApp.Desktop` project. You can also do the same pretty simple with `NativeApp.Android`. Just make sure that required SDKs are installed.
 
 ## TODO
@@ -33,3 +57,4 @@ Now you can simply build the `NativeApp.Desktop` project. You can also do the sa
 - [ ] Fix `NativeApp.Android` project building so it can build Managed libs, copy files to assets at the right time.
 - [ ] Fix `NativeApp.Android` can't determine what Managed libs it need to copy (Debug or Release).
 - [ ] Add support for other architectures for Desktop platforms (i.e. windows 32-bit).
+- [ ] Debugger?
