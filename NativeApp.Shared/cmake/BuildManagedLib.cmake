@@ -18,7 +18,7 @@ file(MAKE_DIRECTORY ${CSPROJ_OUT_DIR})
 # "BuildManagedProject" target helps us to build the .csproj into specific directory for later bundling and with defined configuration.
 add_custom_target(BuildManagedProject
     COMMAND ${CMAKE_COMMAND} -E echo "Building .NET project: ${CSPROJ_FILE}"
-    COMMAND dotnet build ${CSPROJ_FILE} -c ${CSPROJ_BUILD_CONFIGURATION} /p:OutDir=${CSPROJ_OUT_DIR}
+    COMMAND dotnet publish ${CSPROJ_FILE} -c ${CSPROJ_BUILD_CONFIGURATION} -o ${CSPROJ_OUT_DIR}
     COMMENT "Building .NET managed project."
     VERBATIM
 )
