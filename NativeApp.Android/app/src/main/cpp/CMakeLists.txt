@@ -27,6 +27,10 @@ include("${SOLUTION_DIR}/NativeApp.Shared/cmake/EmbeddingMono.cmake")
 target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE "${MONO_RUNTIME_LIBS}")
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE ${MONO_REQUIRED_LINK_LIBS})
 
-add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+add_custom_target(CopyManagedProject
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${MSBUILD_GENERATED} ${ANDROID_ASSETS_GENERATED}
+        COMMENT "Copying MSBuild outputs."
+        VERBATIM
 )
+add_dependencies(CopyManagedProject BuildManagedProject)
+add_dependencies(${CMAKE_PROJECT_NAME} CopyManagedProject)

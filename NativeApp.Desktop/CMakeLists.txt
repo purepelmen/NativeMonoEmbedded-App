@@ -59,9 +59,13 @@ execute_process(
 
 # At every build, copy all that MSBuild project (.csproj) has generated (the whole 'Managed' folder) to binary dir.
 # This ensures that we have recently compiled C# project near the executable.
-add_custom_command(TARGET NativeApp.Desktop POST_BUILD
+add_custom_target(CopyManagedProject
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${MSBUILD_GENERATED} ${NativeApp.Desktop_BINARY_DIR}
+    COMMENT "Copying MSBuild outputs."
+    VERBATIM
 )
+add_dependencies(CopyManagedProject BuildManagedProject)
+add_dependencies(NativeApp.Desktop CopyManagedProject)
 
 # -> PACKAGE BUNDLE operation
 # Package bundling will copy everything to a clean directory for distribution.
