@@ -25,9 +25,9 @@ For Android you will need this additionally:
 Note: about exact versions... it depends. In this project I use:
 > - `Assembly-Main` is targetting **net8.0**.
 > - `NativeApp.Shared`, `NativeApp.Desktop` and `nativeapp` (in `NativeApp.Android`) set the C\+\+20 in CMake. They also use C++17 features like **std::filesystem**.
-> `NativeApp.Android` targets SDK 34, sets min SDK as 24, uses Java 8 and doesn't specify a specific NDK version.
+> - `NativeApp.Android` targets SDK 34, sets min SDK as 24, uses Java 8 and doesn't specify a specific NDK version.
 
-> Of course you can change these versions used and apply some tweaks so everything can work on lower/newer versions.
+> Of course you can change these versions and apply some tweaks so everything can work on older/newer versions.
 
 Note: Python is needed only if you would use `prepare-runtime.py`. It's not used when building the project.
 
@@ -57,4 +57,8 @@ Now you can simply build the `NativeApp.Desktop` project. You can also do the sa
 - [x] Fix `NativeApp.Android` project building so it can build Managed libs, copy files to assets at the right time.
 - [x] Fix `NativeApp.Android` can't determine what Managed libs it need to copy (Debug or Release).
 - [ ] Add support for other architectures for Desktop platforms (i.e. windows 32-bit).
+- [ ] Provide a script to build all native projects and prepare build output files for using so the project can be built by only having .NET SDK (+ optionally Android SDK).
+- [ ] Fix problems with building of the managed project: it does not copy NuGet package contents (managed and native libs).
+- [ ] Fix `NativeApp.Shared` so the dependencies of the main assembly (`Assembly-Main`) are loaded by the CLR.
+- [ ] Fix `NativeApp.Android` fails to extract Managed binary assets with sub-folders.
 - [ ] Debugger?

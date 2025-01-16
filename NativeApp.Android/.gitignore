@@ -13,3 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Let's better exclude the whole .idea folder.
+/.idea/
+
