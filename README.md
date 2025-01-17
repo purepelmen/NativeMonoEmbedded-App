@@ -60,6 +60,8 @@ Now you can simply build the `NativeApp.Desktop` project. You can also do the sa
 - [ ] Provide a script to build all native projects and prepare build output files for using so the project can be built by only having .NET SDK (+ optionally Android SDK).
 - [x] Fix problems with building of the managed project: it does not copy NuGet package contents (managed and native libs).
 > Using `dotnet publish` instead of `build` builds and prepares everything required for the app to work. Probably it should have been used from the start.
-- [ ] Fix `NativeApp.Shared` so the dependencies of the main assembly (`Assembly-Main`) are loaded by the CLR.
+- [x] Fix `NativeApp.Shared` so the dependencies of the main assembly (`Assembly-Main`) are loaded by the CLR.
+> The 'Managed' directory is now added to assembly paths on all platforms so it's even now possible to just specify an AssemblyName instead of path.
 - [ ] Fix `NativeApp.Android` fails to extract Managed binary assets with sub-folders.
+- [ ] Fix `NativeApp.Android` dont-reextract optimtimization: updating Android application does not trigger reextraction of newly compiled Managed libraries.
 - [ ] Debugger?

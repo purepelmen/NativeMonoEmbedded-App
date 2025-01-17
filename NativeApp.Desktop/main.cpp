@@ -38,8 +38,11 @@ int main()
 {
     path exePath = GetExecutablePath();
     
-    path monoPath = exePath / "Runtime.Framework/";
-    mono_set_assemblies_path(monoPath.string().c_str());
+    std::string monoPaths{};
+    (monoPaths += exePath.string()) += "/Runtime.Framework/";
+    monoPaths += ";";
+    (monoPaths += exePath.string()) += "/Managed/";
 
+    mono_set_assemblies_path(monoPaths.c_str());
     return sharedNative_main(exePath);
 }

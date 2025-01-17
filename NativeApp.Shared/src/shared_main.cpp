@@ -31,10 +31,14 @@ int sharedNative_main(path exePath)
     }
 
     MonoDomain* domain = mono_jit_init("My Native App");
-    
-    path mainAssemblyPath = exePath / "Managed/Assembly-Main.dll";
 
-    MonoAssembly* assembly = mono_assembly_open(mainAssemblyPath.string().c_str(), NULL);
+    MonoAssemblyName* mainAssemblyName = mono_assembly_name_new("Assembly-Main");
+
+    // Specify an assembly name, or use mono_assembly_open to load from a file.
+    MonoAssembly* assembly = mono_assembly_load(mainAssemblyName, nullptr, nullptr);
+    mono_assembly_name_free(mainAssemblyName);
+    mono_free(mainAssemblyName);
+
     if (assembly != nullptr)
     {
         MonoImage* image = mono_assembly_get_image(assembly);

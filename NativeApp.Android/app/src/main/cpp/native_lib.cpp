@@ -15,9 +15,9 @@ JNIEXPORT jint JNICALL
 Java_com_monoembedtest_nativeapp_MonoRuntimeBootstrap_start(JNIEnv *env, jclass clazz,
                                                             jstring exePathJStr, jobject assetManager)
 {
-    AndroidMono_Init(AAssetManager_fromJava(env, assetManager));
-
     path exePath = GetPathFromJString(env, exePathJStr);
+    AndroidMono_Init(exePath, AAssetManager_fromJava(env, assetManager));
+
     return sharedNative_main(exePath);
 }
 

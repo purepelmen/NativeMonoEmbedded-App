@@ -13,36 +13,24 @@ using std::filesystem::path;
 static AAssetManager* g_assetManager;
 const char* FRAMEWORK_PRELOADER_TAG = "MonoFrameworkPreLoader";
 
-static MonoAssembly* LoadAssemblyFromRawBytes(char* data, uint32_t dataLength, const char* assocAssemblyName)
-{
-    MonoImageOpenStatus status;
+static MonoAssembly* LoadAssemblyFromRawBytes(char* data, uint32_t dataLength, const char* assocAssemblyName);
+// Utility that helps to look-up framework assemblies on Android platform by checking the APK assets,
+// inside the 'Runtime.Framework' directory. This is expected to be called only when loading assemblies by an Assembly Name,
+// not its direct path. The assembly will be found by its name specified in the given Assembly Name, and appending '.dll' extension.
+static MonoAssembly* PreloadFrameworkAssemblyHook(MonoAssemblyName* assemblyName, char** assembliesPath, void* userData);
 
-    MonoImage* image = mono_image_open_from_data_with_name(data, dataLength, true, &status, false, assocAssemblyName);
-    if (image == nullptr)
-    {
-        __android_log_print(ANDROID_LOG_ERROR, "android_mono", "LoadAssemblyFromRawBytes() failed to open image '%s'", assocAssemblyName);
-        return nullptr;
-    }
-
-    MonoAssembly* assembly = mono_assembly_load_from(image, assocAssemblyName, &status);
-    if (assembly == nullptr)
-    {
-        __android_log_print(ANDROID_LOG_ERROR, "android_mono", "LoadAssemblyFromRawBytes() failed to load assembly from image '%s'", assocAssemblyName);
-
-        mono_image_close(image);
-        return nullptr;
-    }
-
-    return assembly;
-}
-
-void AndroidMono_Init(AAssetManager* assetManager)
+void AndroidMono_Init(const std::filesystem::path& exePath, AAssetManager* assetManager)
 {
     g_assetManager = assetManager;
 
     // We need to install this utility because we can't just give path inside the APK assets folder.
     // We need to use AssetManager for that, so this utility will help loading framework assemblies via AssetManager.
     mono_install_assembly_preload_hook(PreloadFrameworkAssemblyHook, nullptr);
+
+    std::string monoPaths{};
+    (monoPaths += exePath.string()) += "/Managed/";
+
+    mono_set_assemblies_path(monoPaths.c_str());
 }
 
 MonoAssembly* PreloadFrameworkAssemblyHook(MonoAssemblyName* assemblyName, char** assembliesPath, void* userData)
@@ -78,5 +66,28 @@ MonoAssembly* PreloadFrameworkAssemblyHook(MonoAssemblyName* assemblyName, char*
     {
         __android_log_print(ANDROID_LOG_ERROR, FRAMEWORK_PRELOADER_TAG, "Unable to load assembly '%s' from raw bytes, though the file exists (loading from virtual path: %s)", assemblyNameStr, fakeAssemblyPath.c_str());
     }
+    return assembly;
+}
+
+MonoAssembly* LoadAssemblyFromRawBytes(char* data, uint32_t dataLength, const char* assocAssemblyName)
+{
+    MonoImageOpenStatus status;
+
+    MonoImage* image = mono_image_open_from_data_with_name(data, dataLength, true, &status, false, assocAssemblyName);
+    if (image == nullptr)
+    {
+        __android_log_print(ANDROID_LOG_ERROR, "android_mono", "LoadAssemblyFromRawBytes() failed to open image '%s'", assocAssemblyName);
+        return nullptr;
+    }
+
+    MonoAssembly* assembly = mono_assembly_load_from(image, assocAssemblyName, &status);
+    if (assembly == nullptr)
+    {
+        __android_log_print(ANDROID_LOG_ERROR, "android_mono", "LoadAssemblyFromRawBytes() failed to load assembly from image '%s'", assocAssemblyName);
+
+        mono_image_close(image);
+        return nullptr;
+    }
+
     return assembly;
 }
