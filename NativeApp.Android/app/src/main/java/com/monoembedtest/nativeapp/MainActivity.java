@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,27 +50,39 @@ public class MainActivity extends Activity {
             return;
         }
 
-        AssetManager assetManager = getAssets();
-        String[] contents = assetManager.list(sourceFolder);
+        extractAssetsSubdir(sourceFolder, destinationDir);
+        dontReextractFile.createNewFile();
+    }
 
+    private void extractAssetsSubdir(String targetSubdir, File destDir) throws IOException {
+        AssetManager assetManager = getAssets();
+
+        String[] contents = assetManager.list(targetSubdir);
         if (contents == null) {
             throw new IllegalArgumentException("source doesn't exist in the assets");
         }
 
         byte[] buffer = new byte[1024];
-        for (String fileName : contents) {
-            String readFilePath = sourceFolder + "/" + fileName;
+        for (String childEntry : contents) {
+            String fullReadPath = targetSubdir + "/" + childEntry;
+            File destEntry = new File(destDir, childEntry);
 
-            try (InputStream in = assetManager.open(readFilePath);
-                 FileOutputStream out = new FileOutputStream(new File(destinationDir, fileName))) {
+            InputStream targetDirOrFile;
+            try {
+                targetDirOrFile = assetManager.open(fullReadPath);
+            }
+            catch (FileNotFoundException exception) {
+                destEntry.mkdir();
+                extractAssetsSubdir(fullReadPath, destEntry);
+                continue;
+            }
 
+            try (InputStream inSource = targetDirOrFile; FileOutputStream outDest = new FileOutputStream(destEntry)) {
                 int read;
-                while ((read = in.read(buffer)) != -1) {
-                    out.write(buffer, 0, read);
+                while ((read = inSource.read(buffer)) != -1) {
+                    outDest.write(buffer, 0, read);
                 }
             }
         }
-
-        dontReextractFile.createNewFile();
     }
 }
