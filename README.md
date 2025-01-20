@@ -2,13 +2,15 @@
 This is a fully-working template of a project embedding Mono Runtime (the modern one, Mono CLR) which allows you to write both crossplatform C++ and C# code for Windows, Linux, and Android.
 
 ## Structure
-Everything is pretty simple: this projects uses CMake as a build system for the whole project (which may also use MSBuild to build .NET projects).
-There are two main projects: `NativeApp.Shared` and `Assembly-Main`. The former one is a native C++ cross-platform project which also contains code to initialize the Mono runtime. The latter one is cross-platform C# project.
+Everything is pretty simple. There are two main projects: `NativeApp.Shared` and `Assembly-Main`.
 
+CMake is mostly used here to build everything. `NativeApp.Shared` is a native C++ cross-platform CMake project. It defines its code but it also must initialize Mono runtime, as well as load the `Assembly-Main` managed assembly, and define how to build the `Assembly-Main` MSBuild C# project. The managed project contains cross-platform C# code.
+
+They both define *user code*, and this is where main application code should typically go in this template.
 The other projects are *app containers*. They're not really cross-platform and its purpose is to build the two main cross-platform projects and include them into the executable/application, which is what an app container is. It's a wrapper for the cross-platform projects that handles platform differencies of how things must be initialized for different platforms.
-Here's app containers the project has now:
-* `NativeApp.Desktop` (executable for all Desktop platforms, but currently only Windows and Linux).
-* `NativeApp.Android` (Android application) - Some more code is required to make things work on this platform.
+Here's app containers this project has now:
+* `NativeApp.Desktop` (Executable): Intended for all Desktop platforms (currently only Windows and Linux supported); Uses CMake;
+* `NativeApp.Android` (Android application): Android only for all architectures; More code is required to make things work on this platform; Uses Gradle and CMake;
 
 ## Building
 ### Requirements
@@ -59,9 +61,10 @@ Now you can simply build the `NativeApp.Desktop` project. You can also do the sa
 - [ ] Add support for other architectures for Desktop platforms (i.e. windows 32-bit).
 - [ ] Provide a script to build all native projects and prepare build output files for using so the project can be built by only having .NET SDK (+ optionally Android SDK).
 - [x] Fix problems with building of the managed project: it does not copy NuGet package contents (managed and native libs).
-> Using `dotnet publish` instead of `build` builds and prepares everything required for the app to work. Probably it should have been used from the start.
+> Using `dotnet publish` instead of `build` builds and prepares everything required for the app to work. Apparently it should have been used from the start.
 - [x] Fix `NativeApp.Shared` so the dependencies of the main assembly (`Assembly-Main`) are loaded by the CLR.
 > The 'Managed' directory is now added to assembly paths on all platforms so it's even now possible to just specify an AssemblyName instead of path.
 - [x] Fix `NativeApp.Android` fails to extract Managed binary assets with sub-folders.
 - [ ] Fix `NativeApp.Android` dont-reextract optimtimization: updating Android application does not trigger reextraction of newly compiled Managed libraries.
+- [ ] Make proper native shared library loading (through P/Invoke) for Desktop platforms.
 - [ ] Debugger?
