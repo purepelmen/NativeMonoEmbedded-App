@@ -6,6 +6,16 @@ cmake_minimum_required(VERSION 3.22.1)
 
 set(SOLUTION_DIR "${CMAKE_SOURCE_DIR}/../../../../../")
 set(ANDROID_ASSETS_GENERATED "${CMAKE_SOURCE_DIR}/../assetsGen/")
+
+set(OSNAME_ID "android")
+if (CMAKE_ANDROID_ARCH_ABI STREQUAL "armeabi-v7a")
+    set(NATIVE_ARCH_ID "arm")
+elseif (CMAKE_ANDROID_ARCH_ABI STREQUAL "arm64-v8a")
+    set(NATIVE_ARCH_ID "arm64")
+else()
+    # Assuming x86 and x64 architectures.
+    set(NATIVE_ARCH_ID "${CMAKE_ANDROID_ARCH_ABI}")
+endif()
 add_compile_definitions(PLATFORM_ANDROID)
 
 add_subdirectory("${SOLUTION_DIR}/NativeApp.Shared/" ./Shared/)

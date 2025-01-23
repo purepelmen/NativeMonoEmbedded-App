@@ -9,7 +9,7 @@ endif()
 
 set(NATIVE_ARCH_ID "x64")
 if(WIN32)
-    set(OSNAME_ID "windows")
+    set(OSNAME_ID "win")
     add_compile_definitions(PLATFORM_WINDOWS)
 else()
     set(OSNAME_ID "linux")

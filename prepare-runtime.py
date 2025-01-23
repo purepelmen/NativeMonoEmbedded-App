@@ -29,7 +29,7 @@ def print_usage():
 
 
 class OSArch:
-    WIN = "windows"
+    WIN = "win"
     LINUX = "linux"
     ANDROID = "android"
 
