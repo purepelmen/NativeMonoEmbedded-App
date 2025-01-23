@@ -40,7 +40,7 @@ int main()
     
     std::string monoPaths{};
     (monoPaths += exePath.string()) += "/Runtime.Framework/";
-    monoPaths += ";";
+    monoPaths += ENV_PATHSEP;
     (monoPaths += exePath.string()) += "/Managed/";
 
     mono_set_assemblies_path(monoPaths.c_str());
