@@ -65,6 +65,9 @@ Now you can simply build the `NativeApp.Desktop` project. You can also do the sa
 - [x] Fix `NativeApp.Shared` so the dependencies of the main assembly (`Assembly-Main`) are loaded by the CLR.
 > The 'Managed' directory is now added to assembly paths on all platforms so it's even now possible to just specify an AssemblyName instead of path.
 - [x] Fix `NativeApp.Android` fails to extract Managed binary assets with sub-folders.
-- [ ] Fix `NativeApp.Android` dont-reextract optimtimization: updating Android application does not trigger reextraction of newly compiled Managed libraries.
-- [ ] Make proper native shared library loading (through P/Invoke) for Desktop platforms.
+- [ ] Fix `NativeApp.Android` dont-reextract optimization: updating Android application does not trigger reextraction of newly compiled Managed libraries.
+- [x] Make proper native shared library loading (through P/Invoke) for Desktop platforms.
+> From my understanding, Mono CLR by default tries first to locate native libs near the assembly containing the P/Invoke method. So P/Invoke-s should work fine. However this is not the case with `NativeLibrary.Load()` calls. For example Silk.NET doesn't work when native libs are placed in the 'Managed' folder automatically. They must be placed near the executable.
+
+> So I specified the RID when executing `dotnet publish`, and that's the only thing I did. I decided not to add the 'Managed' library in the shared libs search paths because I need consistent support for it on all desktop OS. On Windows I can do this easily at runtime by `AddDllDirectory()`, while on Linux only `RPATH` seems to work as I want which is deprecated and discouraged from using, so I won't rely on it.
 - [ ] Debugger?
