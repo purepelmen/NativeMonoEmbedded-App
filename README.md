@@ -58,7 +58,7 @@ Now you can simply build the `NativeApp.Desktop` project. You can also do the sa
 > The user-code ('Managed' dir) is STILL copied at the first start-up though, and won't be located the same way (I want to have full real paths to the directory).
 - [x] Fix `NativeApp.Android` project building so it can build Managed libs, copy files to assets at the right time.
 - [x] Fix `NativeApp.Android` can't determine what Managed libs it need to copy (Debug or Release).
-- [ ] Add support for other architectures for Desktop platforms (i.e. windows 32-bit).
+- [x] Add support for other architectures for Desktop platforms (i.e. windows 32-bit).
 - [ ] Provide a script to build all native projects and prepare build output files for using so the project can be built by only having .NET SDK (+ optionally Android SDK).
 - [x] Fix problems with building of the managed project: it does not copy NuGet package contents (managed and native libs).
 > Using `dotnet publish` instead of `build` builds and prepares everything required for the app to work. Apparently it should have been used from the start.

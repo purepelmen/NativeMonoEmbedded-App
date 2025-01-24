@@ -7,7 +7,15 @@ if (POLICY CMP0141)
   set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
 endif()
 
-set(NATIVE_ARCH_ID "x64")
+set(ALLOWED_ARCH_IDS "x64" "x86")
+
+set(NATIVE_ARCH_ID "x64" CACHE STRING "Specify the architecture being used for MSBuild and import lib generation.")
+set_property(CACHE NATIVE_ARCH_ID PROPERTY STRINGS ${ALLOWED_ARCH_IDS})
+
+if(NOT NATIVE_ARCH_ID IN_LIST ALLOWED_ARCH_IDS)
+    message(FATAL_ERROR "Specified NATIVE_ARCH_ID is '${NATIVE_ARCH_ID}' which is an unsupported value (must be: ${ALLOWED_ARCH_IDS}).")
+endif()
+
 if(WIN32)
     set(OSNAME_ID "win")
     add_compile_definitions(PLATFORM_WINDOWS)
@@ -23,7 +31,7 @@ endif()
 set(SOLUTION_DIR "${CMAKE_SOURCE_DIR}/../")
 
 # Bundling properties. Required for the "Package Bundle" operation.
-set(BUNDLE_DIR "${SOLUTION_DIR}/artifacts/${CMAKE_BUILD_TYPE}")
+set(BUNDLE_DIR "${SOLUTION_DIR}/artifacts/${CMAKE_BUILD_TYPE}-${NATIVE_ARCH_ID}")
 option(PACKAGE_BUNDLE "Should the CMake package the executable build to a separate directory." OFF)
 
 add_subdirectory("../NativeApp.Shared/" ./Shared/)
