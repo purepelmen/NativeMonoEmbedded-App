@@ -1,6 +1,12 @@
 # NativeMonoEmbedded-App
 This is a fully-working template of a project embedding Mono Runtime (the modern one, Mono CLR) which allows you to write both crossplatform C++ and C# code for Windows, Linux, and Android.
 
+## Use cases
+You can use this template if you want to avoid using **.NET MAUI** or **.NET for Android**.
+As this also allows you to directly edit how you embed, start and control the runtime, you can use it whenever you need full control (and the access to Mono API), or when you need very minimal .NET embedded apps.
+
+It also a good project where you can look, inspect, and understand how you can embed and start the modern .NET Mono runtime on different platforms. Docs and comments can additionally help you.
+
 ## Structure
 Everything is pretty simple. There are two main projects: `NativeApp.Shared` and `Assembly-Main`.
 
@@ -90,6 +96,7 @@ It's not necessary because the normal build places everything required to run th
 - [x] Fix `NativeApp.Android` can't determine what Managed libs it need to copy (Debug or Release).
 - [x] Add support for other architectures for Desktop platforms (i.e. windows 32-bit).
 - [ ] Provide a script to build all native projects and prepare build output files for using so the project can be built by only having .NET SDK (+ optionally Android SDK).
+> Motivation: to provide an ability to pre-build the native part of the app to act like a bootstrapper for the managed app, and then only work with C# code.
 - [x] Fix problems with building of the managed project: it does not copy NuGet package contents (managed and native libs).
 > Using `dotnet publish` instead of `build` builds and prepares everything required for the app to work. Apparently it should have been used from the start.
 - [x] Fix `NativeApp.Shared` so the dependencies of the main assembly (`Assembly-Main`) are loaded by the CLR.
@@ -100,4 +107,6 @@ It's not necessary because the normal build places everything required to run th
 > From my understanding, Mono CLR by default tries first to locate native libs near the assembly containing the P/Invoke method. So P/Invoke-s should work fine. However this is not the case with `NativeLibrary.Load()` calls. For example Silk.NET doesn't work when native libs are placed in the 'Managed' folder automatically. They must be placed near the executable.
 
 > So I specified the RID when executing `dotnet publish`, and that's the only thing I did. I decided not to add the 'Managed' library in the shared libs search paths because I need consistent support for it on all desktop OS. On Windows I can do this easily at runtime by `AddDllDirectory()`, while on Linux only `RPATH` seems to work as I want which is deprecated and discouraged from using, so I won't rely on it.
+- [ ] Put multiple System.Private.CoreLib for different architectures in `NativeApp.Android`.
+> This library probably has some native code or something, and at least this framework lib should be dublicated. The others are probably safe to overwrite with only one architecture variant.
 - [ ] Debugger?
