@@ -34,7 +34,7 @@ class OSArch:
     ANDROID = "android"
 
     X86 = "x86"
-    X64 = "x64"
+    X64 = "x86_64"
     ARM32 = "armeabi-v7a"
     ARM64 = "arm64-v8a"
 
