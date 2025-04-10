@@ -18,6 +18,7 @@ static MonoAssembly* LoadAssemblyFromRawBytes(char* data, uint32_t dataLength, c
 // inside the 'Runtime.Framework' directory. This is expected to be called only when loading assemblies by an Assembly Name,
 // not its direct path. The assembly will be found by its name specified in the given Assembly Name, and appending '.dll' extension.
 static MonoAssembly* PreloadFrameworkAssemblyHook(MonoAssemblyName* assemblyName, char** assembliesPath, void* userData);
+static MonoAssembly* LoadAssemblyAtPath(const char* assemblyNameStr, const path& assetPath);
 
 void AndroidMono_Init(const std::filesystem::path& exePath, AAssetManager* assetManager)
 {
@@ -36,16 +37,25 @@ void AndroidMono_Init(const std::filesystem::path& exePath, AAssetManager* asset
 MonoAssembly* PreloadFrameworkAssemblyHook(MonoAssemblyName* assemblyName, char** assembliesPath, void* userData)
 {
     const char* assemblyNameStr = mono_assembly_name_get_name(assemblyName);
+    __android_log_print(ANDROID_LOG_DEBUG, FRAMEWORK_PRELOADER_TAG, "Requested loading from the assembly name '%s'", assemblyNameStr);
 
     path assetPath { "Runtime.Framework" };
     assetPath /= assemblyNameStr;
     assetPath += ".dll";
 
-    path fakeAssemblyPath { "apk_assets://" };
-    fakeAssemblyPath /= assetPath;
+    MonoAssembly* assembly = LoadAssemblyAtPath(assemblyNameStr, assetPath);
+    if (assembly != nullptr)
+        return assembly;
 
-    __android_log_print(ANDROID_LOG_DEBUG, FRAMEWORK_PRELOADER_TAG, "Requested loading from the assembly name '%s' [using virtual path: %s]", assemblyNameStr, fakeAssemblyPath.c_str());
+    assetPath = "Runtime.Framework";
+    assetPath /= PLATFORM_ANDROID_ARCH_STRINGIFIED;
+    assetPath /= assemblyNameStr;
+    assetPath += ".dll";
+    return LoadAssemblyAtPath(assemblyNameStr, assetPath);
+}
 
+MonoAssembly* LoadAssemblyAtPath(const char* assemblyNameStr, const path& assetPath)
+{
     AAsset* asset = AAssetManager_open(g_assetManager, assetPath.c_str(), AASSET_MODE_UNKNOWN);
     if (asset == nullptr)
     {
@@ -64,7 +74,7 @@ MonoAssembly* PreloadFrameworkAssemblyHook(MonoAssemblyName* assemblyName, char*
     MonoAssembly* assembly = LoadAssemblyFromRawBytes(buffer.get(), assetLength, assemblyNameStr);
     if (assembly == nullptr)
     {
-        __android_log_print(ANDROID_LOG_ERROR, FRAMEWORK_PRELOADER_TAG, "Unable to load assembly '%s' from raw bytes, though the file exists (loading from virtual path: %s)", assemblyNameStr, fakeAssemblyPath.c_str());
+        __android_log_print(ANDROID_LOG_ERROR, FRAMEWORK_PRELOADER_TAG, "Unable to load assembly '%s' from raw bytes, though the file exists (loading from assets path: %s)", assemblyNameStr, assetPath.c_str());
     }
     return assembly;
 }

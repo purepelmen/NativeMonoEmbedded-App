@@ -4,6 +4,8 @@
 set(MONO_RUNTIME_DIR "${SOLUTION_DIR}/thirdparty/Runtime.Mono/")
 
 if(ANDROID)
+    # Don't use NATIVE_ARCH_ID. It's a valid identifier only for .NET build system and NuGet packages.
+    # JNI libs should be named differently (x64 -> x86_64; arm - armeabi-v7a).
     set(MONO_RUNTIME_LIBS "${MONO_RUNTIME_DIR}/gen-android/jniLibs/${CMAKE_ANDROID_ARCH_ABI}")
 else()
     set(MONO_RUNTIME_LIBS "${MONO_RUNTIME_DIR}/gen-${OSNAME_ID}/libs-${NATIVE_ARCH_ID}")

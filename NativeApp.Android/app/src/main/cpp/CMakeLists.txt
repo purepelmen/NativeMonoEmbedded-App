@@ -12,11 +12,15 @@ if (CMAKE_ANDROID_ARCH_ABI STREQUAL "armeabi-v7a")
     set(NATIVE_ARCH_ID "arm")
 elseif (CMAKE_ANDROID_ARCH_ABI STREQUAL "arm64-v8a")
     set(NATIVE_ARCH_ID "arm64")
+elseif (CMAKE_ANDROID_ARCH_ABI STREQUAL "x86_64")
+    set(NATIVE_ARCH_ID "x64")
 else()
-    # Assuming x86 and x64 architectures.
+    # Assuming x86 architecture.
     set(NATIVE_ARCH_ID "${CMAKE_ANDROID_ARCH_ABI}")
 endif()
 add_compile_definitions(PLATFORM_ANDROID)
+add_compile_definitions(PLATFORM_ANDROID_ARCH=${CMAKE_ANDROID_ARCH_ABI})
+add_compile_definitions(PLATFORM_ANDROID_ARCH_STRINGIFIED="${CMAKE_ANDROID_ARCH_ABI}")
 
 add_subdirectory("${SOLUTION_DIR}/NativeApp.Shared/" ./Shared/)
 

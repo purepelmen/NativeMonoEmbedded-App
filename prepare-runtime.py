@@ -172,17 +172,19 @@ def generate_binaries_android(lib_dir: str, native_dir: str):
     def check_required_natives(file: str) -> bool:
         return file.endswith(".so")
 
-    runtime_dist_framework = f"{runtime_base_dir}/dist/Runtime.Framework/"
+    dist_framework = f"{runtime_base_dir}/dist/Runtime.Framework/"
+    dist_framework_archspecific = f"{dist_framework}/{os_arch.get_arch()}/"
     runtime_jniLibs = f"{runtime_base_dir}/jniLibs/{os_arch.get_arch()}/"
     
     # All the contents from the 'lib' folder should be copied to the framework dir.
-    copy_tree(lib_dir, runtime_dist_framework)
+    copy_tree(lib_dir, dist_framework)
     # We need probably all .so shared libs.
     copy_selected_files_from(native_dir, runtime_jniLibs, check_required_natives)
     
     # And the last, the corelib.
     corelib_path = f"{native_dir}/System.Private.CoreLib.dll"
-    copy_file(corelib_path, runtime_dist_framework)
+    mkpath(dist_framework_archspecific)
+    copy_file(corelib_path, dist_framework_archspecific)
 
 def generate_binaries():
     lib_dir = find_libs_dir()

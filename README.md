@@ -107,6 +107,8 @@ It's not necessary because the normal build places everything required to run th
 > From my understanding, Mono CLR by default tries first to locate native libs near the assembly containing the P/Invoke method. So P/Invoke-s should work fine. However this is not the case with `NativeLibrary.Load()` calls. For example Silk.NET doesn't work when native libs are placed in the 'Managed' folder automatically. They must be placed near the executable.
 
 > So I specified the RID when executing `dotnet publish`, and that's the only thing I did. I decided not to add the 'Managed' library in the shared libs search paths because I need consistent support for it on all desktop OS. On Windows I can do this easily at runtime by `AddDllDirectory()`, while on Linux only `RPATH` seems to work as I want which is deprecated and discouraged from using, so I won't rely on it.
-- [ ] Put multiple System.Private.CoreLib for different architectures in `NativeApp.Android`.
+- [x] Put multiple System.Private.CoreLib for different architectures in `NativeApp.Android`.
 > This library probably has some native code or something, and at least this framework lib should be dublicated. The others are probably safe to overwrite with only one architecture variant.
+
+> Done. Now Runtime.Framework folder contains all managed framework libs that are shared on all architectures, and architecture specific libs will go in `Runtime.Framework/{arch}/` folder.
 - [ ] Debugger?
