@@ -40,7 +40,7 @@ add_executable(NativeApp.Desktop "main.cpp")
 target_link_libraries(NativeApp.Desktop PRIVATE NativeApp.Shared)
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET NativeApp.Desktop PROPERTY CXX_STANDARD 20)
+  set_property(TARGET NativeApp.Desktop PROPERTY CXX_STANDARD 17)
 endif()
 
 include("${SOLUTION_DIR}/NativeApp.Shared/cmake/EmbeddingMono.cmake")

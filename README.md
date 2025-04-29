@@ -52,8 +52,9 @@ For Android you will need this additionally:
 
 Note: about exact versions... it depends. In this project I use:
 > - `Assembly-Main` is targetting **net8.0**.
-> - `NativeApp.Shared`, `NativeApp.Desktop` and `nativeapp` (in `NativeApp.Android`) set the C\+\+20 in CMake. They also use C++17 features like **std::filesystem**.
+> - `NativeApp.Shared`, `NativeApp.Desktop` and `nativeapp` (in `NativeApp.Android`) require C\+\+17 (defined in CMake).
 > - `NativeApp.Android` targets SDK 34, sets min SDK as 24, uses Java 8 and doesn't set a specific NDK version.
+> - CMake minimum version: **3.8**.
 
 > Of course you can change these versions and apply some tweaks so everything can work on older/newer versions.
 

@@ -7,7 +7,7 @@
 
 #if PLATFORM_WINDOWS
 constexpr char ENV_PATHSEP = ';';
-#elif PLATFORM_LINUX
+#elif PLATFORM_LINUX || PLATFORM_ANDROID
 constexpr char ENV_PATHSEP = ':';
 #endif
 

@@ -2,7 +2,7 @@
 # documentation: https://d.android.com/studio/projects/add-native-code.html.
 # For more examples on how to use CMake, see https://github.com/android/ndk-samples.
 
-cmake_minimum_required(VERSION 3.22.1)
+cmake_minimum_required(VERSION 3.8)
 
 set(SOLUTION_DIR "${CMAKE_SOURCE_DIR}/../../../../../")
 set(ANDROID_ASSETS_GENERATED "${CMAKE_SOURCE_DIR}/../assetsGen/")
@@ -34,7 +34,7 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
 )
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
-    set_property(TARGET ${CMAKE_PROJECT_NAME} PROPERTY CXX_STANDARD 20)
+    set_property(TARGET ${CMAKE_PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 endif()
 
 include("${SOLUTION_DIR}/NativeApp.Shared/cmake/EmbeddingMono.cmake")
