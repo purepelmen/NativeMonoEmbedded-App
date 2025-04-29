@@ -79,8 +79,8 @@ By default the CMake script assumes you build for `x64` architecture. It doesn't
 
 For Windows it's easier because `CMakePresets.json` provides some configuration presets specifically for Windows: `x64-debug`, `x64-release`, `x86-debug`, `x86-release`.
 
-#### Bundling
-Set `PACKAGE_BUNDLE` bool cache variable to true to prepare a fully ready build into a separate folder after build. It should be at path like `artifacts/Debug-x64/`.
+#### Packaging
+Set `PACKAGE_BUILD` bool cache variable to true to prepare a fully ready and clean build into a separate folder after build. It should be at path like `artifacts/Debug-x64/`.
 It's not necessary because the normal build places everything required to run the application in the CMake build directory.
 
 ## TODO

@@ -30,9 +30,6 @@ endif()
 
 set(SOLUTION_DIR "${CMAKE_SOURCE_DIR}/../")
 
-# Bundling properties. Required for the "Package Bundle" operation.
-set(BUNDLE_DIR "${SOLUTION_DIR}/artifacts/${CMAKE_BUILD_TYPE}-${NATIVE_ARCH_ID}")
-option(PACKAGE_BUNDLE "Should the CMake package the executable build to a separate directory." OFF)
 
 add_subdirectory("../NativeApp.Shared/" ./Shared/)
 
@@ -58,6 +55,7 @@ endif()
 # EmbeddingMono.cmake reports all libs we should link in MONO_REQUIRED_LINK_LIBS, so use it.
 target_link_libraries(NativeApp.Desktop PRIVATE ${MONO_REQUIRED_LINK_LIBS})
 
+
 # At configure, runtime distribution files should be copied. We don't need to copy it every build.
 # MONO_RUNTIME_DIST, provided by EmbeddingMono.cmake script, is the right path to all files we should distribute with the executable.
 # For Desktop, it usually contains the runtime (coreclr.dll/.so), and the 'Runtime.Framework' dir with all managed system DLLs.
@@ -75,20 +73,4 @@ add_custom_target(CopyManagedProject
 add_dependencies(CopyManagedProject BuildManagedProject)
 add_dependencies(NativeApp.Desktop CopyManagedProject)
 
-# -> PACKAGE BUNDLE operation
-# Package bundling will copy everything to a clean directory for distribution.
-if (PACKAGE_BUNDLE)
-    add_custom_command(TARGET NativeApp.Desktop POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E echo "Bundling all files together to the executable directory: ${BUNDLE_DIR}"
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${MSBUILD_GENERATED} ${BUNDLE_DIR}
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${MONO_RUNTIME_DIST} ${BUNDLE_DIR}
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:NativeApp.Desktop> ${BUNDLE_DIR}
-    )
-    
-    if (DEFINED WIN32 AND CMAKE_BUILD_TYPE STREQUAL "Debug")
-        add_custom_command(TARGET NativeApp.Desktop POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E echo "Bundling DEBUG-only files together to the executable directory: ${BUNDLE_DIR}"
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_PDB_FILE:NativeApp.Desktop> ${BUNDLE_DIR}
-        )
-    endif()
-endif()
+include("${CMAKE_SOURCE_DIR}/cmake/PackageBuild.cmake")
